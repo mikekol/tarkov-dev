@@ -2222,12 +2222,10 @@ function Map() {
 
         lastProcessedZoomRef.current = remoteMapZoom;
 
-        const zoomPercent = Math.min(Math.max(remoteMapZoom, 100), 400);
         const minZoom = map.getMinZoom();
         const maxZoom = map.getMaxZoom();
-        const zoomOffset = Math.log2(zoomPercent / 100);
-        const targetZoom = minZoom + zoomOffset;
-        const clampedZoom = Number.isFinite(maxZoom) ? Math.min(targetZoom, maxZoom) : targetZoom;
+        // Clamp to Leaflet's supported zoom range for this map
+        const clampedZoom = Math.max(minZoom, Math.min(remoteMapZoom, maxZoom));
 
         map.setZoom(clampedZoom, { animate: true });
     }, [mapData, remoteMapZoom]);
