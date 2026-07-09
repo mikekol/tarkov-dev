@@ -1,5 +1,5 @@
 import { expect, it, describe, beforeEach } from "@rstest/core";
-import settingsReducer, { setPlayerPosition, setRemoteMapZoom } from "#src/features/settings/settingsSlice.mjs";
+import settingsReducer, { setPlayerPosition } from "#src/features/settings/settingsSlice.mjs";
 
 describe("settingsSlice - playerPosition and zoom", () => {
     let initialState;
@@ -85,12 +85,5 @@ describe("settingsSlice - playerPosition and zoom", () => {
         const state = settingsReducer(initialState, setPlayerPosition(positionWithZeroZoom));
 
         expect(state.remoteMapZoom).toBe(0);
-    });
-
-    it("should allow standalone setRemoteMapZoom for backward compatibility", () => {
-        const state = settingsReducer(initialState, setRemoteMapZoom(12));
-
-        expect(state.remoteMapZoom).toBe(12);
-        expect(state.playerPosition).toBeNull();
     });
 });
