@@ -234,10 +234,6 @@ const settingsSlice = createSlice({
                 state.remoteMapZoom = Number.isFinite(nextZoom) ? nextZoom : null;
             }
         },
-        setRemoteMapZoom: (state, action) => {
-            const nextZoom = Number(action.payload);
-            state.remoteMapZoom = Number.isFinite(nextZoom) ? nextZoom : null;
-        },
         setGameMode: (state, action) => {
             state.gameMode = action.payload;
             localStorageWriteJson("gameMode", action.payload);
@@ -368,7 +364,6 @@ export const {
     toggleHideRemoteControl,
     toggleHideDogtagBarters,
     setPlayerPosition,
-    setRemoteMapZoom,
     setGameMode,
     setFleaMarketFactors,
     setTarkovTrackerDomain,
