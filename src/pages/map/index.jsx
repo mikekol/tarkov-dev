@@ -16,7 +16,7 @@ import "../../modules/leaflet-control-map-search.js";
 import "../../modules/leaflet-control-map-settings.js";
 import "../../styles/mapSettings.css";
 
-import { setPlayerPosition } from "../../features/settings/settingsSlice.mjs";
+import { setPlayerPosition, setRemoteMapZoom } from "../../features/settings/settingsSlice.mjs";
 
 import { useMapImages } from "../../features/maps/index.js";
 import useItemsData, { useHandbookData } from "../../features/items/index.js";
@@ -337,6 +337,7 @@ function Map() {
     });
 
     const playerPosition = useSelector((state) => state.settings.playerPosition);
+    const remoteMapZoom = useSelector((state) => state.settings.remoteMapZoom);
     // if playerPosition is set, user already has used TarkovMonitor
     // so we can hide the TarkovMonitor link in the settings control
     const playerPositionUsedRef = useRef(!!playerPosition);
@@ -2201,6 +2202,27 @@ function Map() {
             refreshMapSearch();
         }
     }, [mapData, playerPosition, addLayer, dispatch, tMaps]);
+
+    useEffect(() => {
+        if (!mapData || mapData.projection !== "interactive") {
+            return;
+        }
+
+        const map = mapRef.current;
+        if (!map?.options.baseData || remoteMapZoom === null) {
+            return;
+        }
+
+        const zoomPercent = Math.min(Math.max(remoteMapZoom, 100), 400);
+        const minZoom = map.getMinZoom();
+        const maxZoom = map.getMaxZoom();
+        const zoomOffset = Math.log2(zoomPercent / 100);
+        const targetZoom = minZoom + zoomOffset;
+        const clampedZoom = Number.isFinite(maxZoom) ? Math.min(targetZoom, maxZoom) : targetZoom;
+
+        map.setZoom(clampedZoom, { animate: true });
+        dispatch(setRemoteMapZoom(null));
+    }, [mapData, remoteMapZoom, dispatch]);
 
     if (!mapData) {
         return <ErrorPage />;

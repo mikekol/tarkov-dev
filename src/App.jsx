@@ -12,7 +12,7 @@ import theme from "./modules/mui-theme.mjs";
 import i18n from "./i18n.js";
 
 import RemoteControlId from "./components/remote-control-id/index.jsx";
-import { fetchTarkovTrackerProgress, setPlayerPosition } from "./features/settings/settingsSlice.mjs";
+import { fetchTarkovTrackerProgress, setPlayerPosition, setRemoteMapZoom } from "./features/settings/settingsSlice.mjs";
 
 import { enableConnection, setConnectionStatus } from "./features/sockets/socketsSlice.js";
 import useStateWithLocalStorage from "./hooks/useStateWithLocalStorage.jsx";
@@ -256,6 +256,11 @@ function App() {
 
                 if (message.data.type === "playerPosition") {
                     dispatch(setPlayerPosition(message.data));
+                    return;
+                }
+
+                if (message.data.type === "zoom") {
+                    dispatch(setRemoteMapZoom(message.data.value));
                     return;
                 }
 

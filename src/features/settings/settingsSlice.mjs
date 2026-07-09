@@ -184,6 +184,7 @@ const settingsSlice = createSlice({
         }),
         hideRemoteControl: localStorageReadJson("hide-remote-control", false),
         playerPosition: localStorageReadJson("playerPosition", null),
+        remoteMapZoom: null,
         gameMode: localStorageReadJson("gameMode", "regular"),
         Ti: localStorageReadJson("Ti", 0.03),
         Tr: localStorageReadJson("Tr", 0.03),
@@ -226,6 +227,10 @@ const settingsSlice = createSlice({
                 : null;
             state.playerPosition = newPosition;
             localStorageWriteJson("playerPosition", newPosition);
+        },
+        setRemoteMapZoom: (state, action) => {
+            const nextZoom = Number(action.payload);
+            state.remoteMapZoom = Number.isFinite(nextZoom) ? nextZoom : null;
         },
         setGameMode: (state, action) => {
             state.gameMode = action.payload;
@@ -357,6 +362,7 @@ export const {
     toggleHideRemoteControl,
     toggleHideDogtagBarters,
     setPlayerPosition,
+    setRemoteMapZoom,
     setGameMode,
     setFleaMarketFactors,
     setTarkovTrackerDomain,
