@@ -256,6 +256,10 @@ function App() {
 
                 if (message.data.type === "playerPosition") {
                     dispatch(setPlayerPosition(message.data));
+                    // If zoom level is included with the position, apply it
+                    if (message.data.zoomLevel !== undefined) {
+                        dispatch(setRemoteMapZoom(message.data.zoomLevel));
+                    }
                     return;
                 }
 
