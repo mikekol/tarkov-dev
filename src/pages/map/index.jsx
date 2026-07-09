@@ -2203,6 +2203,8 @@ function Map() {
         }
     }, [mapData, playerPosition, addLayer, dispatch, tMaps]);
 
+    const lastProcessedZoomRef = useRef(null);
+
     useEffect(() => {
         if (!mapData || mapData.projection !== "interactive") {
             return;
@@ -2213,6 +2215,13 @@ function Map() {
             return;
         }
 
+        // Only process if zoom value has changed (avoid reprocessing the same value)
+        if (lastProcessedZoomRef.current === remoteMapZoom) {
+            return;
+        }
+
+        lastProcessedZoomRef.current = remoteMapZoom;
+
         const zoomPercent = Math.min(Math.max(remoteMapZoom, 100), 400);
         const minZoom = map.getMinZoom();
         const maxZoom = map.getMaxZoom();
@@ -2221,8 +2230,7 @@ function Map() {
         const clampedZoom = Number.isFinite(maxZoom) ? Math.min(targetZoom, maxZoom) : targetZoom;
 
         map.setZoom(clampedZoom, { animate: true });
-        dispatch(setRemoteMapZoom(null));
-    }, [mapData, remoteMapZoom, dispatch]);
+    }, [mapData, remoteMapZoom]);
 
     if (!mapData) {
         return <ErrorPage />;
