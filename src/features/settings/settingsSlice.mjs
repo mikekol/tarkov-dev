@@ -227,6 +227,12 @@ const settingsSlice = createSlice({
                 : null;
             state.playerPosition = newPosition;
             localStorageWriteJson("playerPosition", newPosition);
+
+            // If zoom level is included with the position, apply it
+            if (action.payload?.zoomLevel !== undefined) {
+                const nextZoom = Number(action.payload.zoomLevel);
+                state.remoteMapZoom = Number.isFinite(nextZoom) ? nextZoom : null;
+            }
         },
         setRemoteMapZoom: (state, action) => {
             const nextZoom = Number(action.payload);
