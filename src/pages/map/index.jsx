@@ -337,7 +337,7 @@ function Map() {
     });
 
     const playerPosition = useSelector((state) => state.settings.playerPosition);
-    const remoteMapZoom = useSelector((state) => state.settings.remoteMapZoom);
+    const remoteViewRadius = useSelector((state) => state.settings.remoteViewRadius);
     // if playerPosition is set, user already has used TarkovMonitor
     // so we can hide the TarkovMonitor link in the settings control
     const playerPositionUsedRef = useRef(!!playerPosition);
@@ -2198,37 +2198,21 @@ function Map() {
             //layerControl.addOverlay(positionLayer, tMaps('Player'), tMaps('Misc'));
             addLayer(positionLayer, "player-position", "Landmarks");
             activateMarkerLayer({ target: positionMarker });
-            mapRef.current.panTo(pos(playerPosition.position), { animate: true });
+            if (remoteViewRadius) {
+                const { x, z } = playerPosition.position;
+                mapRef.current.fitBounds(
+                    L.latLngBounds(
+                        [z - remoteViewRadius, x - remoteViewRadius],
+                        [z + remoteViewRadius, x + remoteViewRadius],
+                    ),
+                    { animate: true },
+                );
+            } else {
+                mapRef.current.panTo(pos(playerPosition.position), { animate: true });
+            }
             refreshMapSearch();
         }
-    }, [mapData, playerPosition, addLayer, dispatch, tMaps]);
-
-    const lastProcessedZoomRef = useRef(null);
-
-    useEffect(() => {
-        if (!mapData || mapData.projection !== "interactive") {
-            return;
-        }
-
-        const map = mapRef.current;
-        if (!map?.options.baseData || remoteMapZoom === null) {
-            return;
-        }
-
-        // Only process if zoom value has changed (avoid reprocessing the same value)
-        if (lastProcessedZoomRef.current === remoteMapZoom) {
-            return;
-        }
-
-        lastProcessedZoomRef.current = remoteMapZoom;
-
-        const minZoom = map.getMinZoom();
-        const maxZoom = map.getMaxZoom();
-        // Clamp to Leaflet's supported zoom range for this map
-        const clampedZoom = Math.max(minZoom, Math.min(remoteMapZoom, maxZoom));
-
-        map.setZoom(clampedZoom, { animate: true });
-    }, [mapData, remoteMapZoom]);
+    }, [mapData, playerPosition, remoteViewRadius, addLayer, dispatch, tMaps]);
 
     if (!mapData) {
         return <ErrorPage />;

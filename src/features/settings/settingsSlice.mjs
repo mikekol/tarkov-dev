@@ -184,7 +184,7 @@ const settingsSlice = createSlice({
         }),
         hideRemoteControl: localStorageReadJson("hide-remote-control", false),
         playerPosition: localStorageReadJson("playerPosition", null),
-        remoteMapZoom: null,
+        remoteViewRadius: null,
         gameMode: localStorageReadJson("gameMode", "regular"),
         Ti: localStorageReadJson("Ti", 0.03),
         Tr: localStorageReadJson("Tr", 0.03),
@@ -228,10 +228,10 @@ const settingsSlice = createSlice({
             state.playerPosition = newPosition;
             localStorageWriteJson("playerPosition", newPosition);
 
-            // If zoom level is included with the position, apply it
-            if (action.payload?.zoomLevel !== undefined) {
-                const nextZoom = Number(action.payload.zoomLevel);
-                state.remoteMapZoom = Number.isFinite(nextZoom) ? nextZoom : null;
+            // If view radius (meters) is included with the position, apply it
+            if (action.payload?.viewRadius !== undefined) {
+                const nextRadius = Number(action.payload.viewRadius);
+                state.remoteViewRadius = Number.isFinite(nextRadius) && nextRadius > 0 ? nextRadius : null;
             }
         },
         setGameMode: (state, action) => {

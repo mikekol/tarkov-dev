@@ -1,17 +1,17 @@
 import { expect, it, describe, beforeEach } from "@rstest/core";
 import settingsReducer, { setPlayerPosition } from "#src/features/settings/settingsSlice.mjs";
 
-describe("settingsSlice - playerPosition and zoom", () => {
+describe("settingsSlice - playerPosition and viewRadius", () => {
     let initialState;
 
     beforeEach(() => {
         initialState = {
             playerPosition: null,
-            remoteMapZoom: null,
+            remoteViewRadius: null,
         };
     });
 
-    it("should set player position without zoom (backward compatibility)", () => {
+    it("should set player position without viewRadius (backward compatibility)", () => {
         const position = {
             map: "interchange",
             position: { x: 100, y: 200, z: 50 },
@@ -21,69 +21,69 @@ describe("settingsSlice - playerPosition and zoom", () => {
         const state = settingsReducer(initialState, setPlayerPosition(position));
 
         expect(state.playerPosition).toEqual(position);
-        expect(state.remoteMapZoom).toBeNull();
+        expect(state.remoteViewRadius).toBeNull();
     });
 
-    it("should set player position with zoom level", () => {
-        const positionWithZoom = {
+    it("should set player position with viewRadius", () => {
+        const positionWithRadius = {
             map: "interchange",
             position: { x: 100, y: 200, z: 50 },
             rotation: 45,
-            zoomLevel: 15,
+            viewRadius: 200,
         };
 
-        const state = settingsReducer(initialState, setPlayerPosition(positionWithZoom));
+        const state = settingsReducer(initialState, setPlayerPosition(positionWithRadius));
 
         expect(state.playerPosition).toEqual({
             map: "interchange",
             position: { x: 100, y: 200, z: 50 },
             rotation: 45,
         });
-        expect(state.remoteMapZoom).toBe(15);
+        expect(state.remoteViewRadius).toBe(200);
     });
 
-    it("should clear player position and zoom when set to null", () => {
+    it("should clear player position when set to null, leaving viewRadius unchanged", () => {
         const stateWithPosition = {
             playerPosition: {
                 map: "interchange",
                 position: { x: 100, y: 200, z: 50 },
                 rotation: 45,
             },
-            remoteMapZoom: 15,
+            remoteViewRadius: 200,
         };
 
         const state = settingsReducer(stateWithPosition, setPlayerPosition(null));
 
         expect(state.playerPosition).toBeNull();
-        // zoom should remain unchanged when clearing position
-        expect(state.remoteMapZoom).toBe(15);
+        // viewRadius should remain unchanged when clearing position
+        expect(state.remoteViewRadius).toBe(200);
     });
 
-    it("should handle zoom level that is not a number gracefully", () => {
-        const positionWithBadZoom = {
+    it("should handle viewRadius that is not a number gracefully", () => {
+        const positionWithBadRadius = {
             map: "interchange",
             position: { x: 100, y: 200, z: 50 },
             rotation: 45,
-            zoomLevel: "not-a-number",
+            viewRadius: "not-a-number",
         };
 
-        const state = settingsReducer(initialState, setPlayerPosition(positionWithBadZoom));
+        const state = settingsReducer(initialState, setPlayerPosition(positionWithBadRadius));
 
         expect(state.playerPosition).toBeDefined();
-        // Should set zoom to null since it's not a finite number
-        expect(state.remoteMapZoom).toBeNull();
+        // Should set remoteViewRadius to null since it's not a finite number
+        expect(state.remoteViewRadius).toBeNull();
     });
 
-    it("should allow zoom level 0 (fully zoomed out)", () => {
-        const positionWithZeroZoom = {
+    it("should ignore viewRadius of zero or negative", () => {
+        const positionWithZeroRadius = {
             map: "interchange",
             position: { x: 100, y: 200, z: 50 },
             rotation: 45,
-            zoomLevel: 0,
+            viewRadius: 0,
         };
 
-        const state = settingsReducer(initialState, setPlayerPosition(positionWithZeroZoom));
+        const state = settingsReducer(initialState, setPlayerPosition(positionWithZeroRadius));
 
-        expect(state.remoteMapZoom).toBe(0);
+        expect(state.remoteViewRadius).toBeNull();
     });
 });
