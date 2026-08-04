@@ -16,7 +16,7 @@ import "../../modules/leaflet-control-map-search.js";
 import "../../modules/leaflet-control-map-settings.js";
 import "../../styles/mapSettings.css";
 
-import { setPlayerPosition, setRemoteMapZoom } from "../../features/settings/settingsSlice.mjs";
+import { setPlayerPosition } from "../../features/settings/settingsSlice.mjs";
 
 import { useMapImages } from "../../features/maps/index.js";
 import useItemsData, { useHandbookData } from "../../features/items/index.js";
@@ -429,7 +429,6 @@ function Map() {
                 groupCheckboxes: true,
                 groupsCollapsable: true,
                 exclusiveOptionalGroups: [tMaps("Levels")],
-                sortLayers: false,
             })
             .addTo(map);
         layerControl.on("layerToggle", (e) => {
@@ -871,11 +870,14 @@ function Map() {
         const baseLayers = [];
         const tileSize = mapData.tileSize || 256;
         if (mapData.tilePath) {
-            tileLayer = L.tileLayer(mapData.tilePath, {
-                tileSize,
-                bounds,
-                ...layerOptions,
-            });
+            tileLayer = L.tileLayer(
+                mapData.tilePath || `https://assets.tarkov.dev/maps/${mapData.normalizedName}/{z}/{x}/{y}.png`,
+                {
+                    tileSize,
+                    bounds,
+                    ...layerOptions,
+                },
+            );
             baseLayers.push(tileLayer);
         }
 
