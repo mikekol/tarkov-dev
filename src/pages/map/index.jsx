@@ -429,6 +429,7 @@ function Map() {
                 groupCheckboxes: true,
                 groupsCollapsable: true,
                 exclusiveOptionalGroups: [tMaps("Levels")],
+                sortLayers: false,
             })
             .addTo(map);
         layerControl.on("layerToggle", (e) => {
