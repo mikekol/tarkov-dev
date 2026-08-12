@@ -615,6 +615,10 @@ function Map() {
         //L.control.scale({position: 'bottomright'}).addTo(map);
 
         mapRef.current = map;
+        if (process.env.NODE_ENV === "development") {
+            window.__map = map;
+            window.L = L;
+        }
 
         const mapDiv = document.getElementById("leaflet-map");
         const resizeObserver = new ResizeObserver(() => {

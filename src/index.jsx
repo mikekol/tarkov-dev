@@ -11,6 +11,10 @@ import ScrollToTop from "./components/scroll-to-top/index.jsx";
 
 const queryClient = new QueryClient();
 
+if (process.env.NODE_ENV === "development") {
+    window.__store = store;
+}
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
     <Provider store={store}>

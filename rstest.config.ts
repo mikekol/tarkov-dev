@@ -6,4 +6,5 @@ export default defineConfig({
     testEnvironment: "jsdom",
     globals: true,
     setupFiles: ["./rstest.setup.ts"],
+    exclude: ["e2e/**", "node_modules/**"],
 });
