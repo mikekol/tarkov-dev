@@ -86,4 +86,23 @@ describe("settingsSlice - playerPosition and viewRadius", () => {
 
         expect(state.remoteViewRadius).toBeNull();
     });
+
+    it("should preserve remoteViewRadius when position update has no viewRadius (backward compatibility)", () => {
+        const stateWithRadius = {
+            playerPosition: null,
+            remoteViewRadius: 200,
+        };
+        const position = {
+            map: "interchange",
+            position: { x: 100, y: 200, z: 50 },
+            rotation: 45,
+            // no viewRadius field — simulates old TarkovMonitor client
+        };
+
+        const state = settingsReducer(stateWithRadius, setPlayerPosition(position));
+
+        expect(state.playerPosition).toEqual(position);
+        // Old clients don't send viewRadius; existing radius must not be cleared
+        expect(state.remoteViewRadius).toBe(200);
+    });
 });
