@@ -871,14 +871,11 @@ function Map() {
         const baseLayers = [];
         const tileSize = mapData.tileSize || 256;
         if (mapData.tilePath) {
-            tileLayer = L.tileLayer(
-                mapData.tilePath || `https://assets.tarkov.dev/maps/${mapData.normalizedName}/{z}/{x}/{y}.png`,
-                {
-                    tileSize,
-                    bounds,
-                    ...layerOptions,
-                },
-            );
+            tileLayer = L.tileLayer(mapData.tilePath, {
+                tileSize,
+                bounds,
+                ...layerOptions,
+            });
             baseLayers.push(tileLayer);
         }
 
