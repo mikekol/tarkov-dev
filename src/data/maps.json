@@ -2983,8 +2983,8 @@
                 "transform": [1, 0, -1, 0],
                 "coordinateRotation": 0,
                 "bounds": [
-                    [300, -300],
-                    [-300, 300]
+                    [3000, -3000],
+                    [-3000, 3000]
                 ],
                 "svgPath": "https://assets.tarkov.dev/maps/test-map/base.svg",
                 "svgLayer": "base"

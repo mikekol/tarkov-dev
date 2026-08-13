@@ -372,3 +372,8 @@ public/sitemap*.xml
 public/sitemap*.xml.gz
 # Workers
 workers-site/index.js
+
+
+# Test Artifacts
+test-results/
+playwright-report/
